@@ -1,0 +1,14 @@
+#PBS -lselect=1:ncpus=16:mem=96gb
+#PBS -lwalltime=24:0:0
+
+
+
+# Change to the submission directory
+
+cd $PBS_O_WORKDIR
+
+# Load modules for any applications
+
+module load anaconda3/personal
+
+R --file=/rds/general/user/cs3515/home/data/genomicsem.R
