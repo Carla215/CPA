@@ -1,0 +1,60 @@
+#PBS -lselect=1:ncpus=10:mem=120gb
+#PBS -lwalltime=72:0:0
+
+# Load modules for any applications
+module load anaconda3/personal
+module load ldsc
+source activate ldsc
+
+# Change to the submission directory
+
+cd $PBS_O_WORKDIR
+
+# Run program
+
+munge_sumstats.py \
+--sumstats ferritin_prins \
+--N 9818 \
+--out ferritin \
+--merge-alleles w_hm3.noMHC.snplist
+
+munge_sumstats.py \
+--sumstats HDL_teslovich \
+--N 99900 \
+--out hdl \
+--merge-alleles w_hm3.noMHC.snplist
+
+munge_sumstats.py \
+--sumstats IL6_ahola \
+--N 8293 \
+--out il6 \
+--merge-alleles w_hm3.noMHC.snplist
+
+munge_sumstats.py \
+--sumstats insulin_prokopenkol \
+--N 10831 \
+--out insulin \
+--merge-alleles w_hm3.noMHC.snplist
+
+munge_sumstats.py \
+--sumstats LDL_teslovich \
+--N 95454 \
+--out ldl \
+--merge-alleles w_hm3.noMHC.snplist
+
+munge_sumstats.py \
+--sumstats tricglycerides_teslovich \
+--N 96598 \
+--out triglycerides \
+--merge-alleles w_hm3.noMHC.snplist
+
+
+#compare sumstats for all traits using LDSC
+
+ldsc.py \
+--rg il6.sumstats.gz,ferritin.sumstats.gz,hdl.sumstats.gz,insulin.sumstats.gz,ldl.sumstats.gz,triglycerides.sumstats.gz \
+--ref-ld-chr eur_w_ld_chr/ \
+--w-ld-chr eur_w_ld_chr/ \
+--out crp_ferritin, crp_hdl, crp_il6, crp_insulin, crp_ldl, crp_triglycerides
+
+
