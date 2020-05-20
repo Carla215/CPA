@@ -1,5 +1,10 @@
 #!/usr/bin/env Rscript
 
+#Carla Smith, first version completed 13th May 2020
+#Run from pipeline.sh, so this script is not called by the user directly
+#Inputs are traits and cohort sizes from command-line using pipeline.sh
+#Outputs are GenomicSEM & ASSET subset R objects
+
 #load libraries
 library(GenomicSEM)
 library(ASSET)
@@ -31,12 +36,12 @@ saveRDS(LDSCoutput, file="LDSCoutput.Rda")
 
 
 #summary
-files= trait.names
-ref= "reference.1000G.maf.0.005.txt"
-se.logit=c(rep(T,length(args)))
+files <- trait.names
+ref <- "reference.1000G.maf.0.005.txt"
+se.logit <- c(rep(T,length(args)))
 se.logit <- paste(as.character(se.logit), collapse=", ")
-info.filter=0.9
-maf.filter=0.01
+info.filter <- 0.9
+maf.filter <- 0.01
 p_sumstats <- sumstats(files=files,ref=ref,trait.names=trait.names,se.logit=se.logit,OLS=trait.names,linprob=NULL,prop=NULL,N=NULL,info.filter=info.filter,maf.filter=maf.filter)
 saveRDS(p_sumstats, file="p_sumstats.Rda")
 
@@ -53,12 +58,12 @@ saveRDS(comfactor, file="comfactor.Rda")
 
 # ASSET
 
-assign variables
+#assign variables
 snp.vars <- p_sumstats$SNP
 traits.lab <- trait.names
 beta.hat <- paste0('"',"beta.",ts,'"', collapse=", ")
 sigma.hat <- paste0('"',"se.",ts,'"', collapse=", ")
-calculate case and control using beta values
+#calculate case and control using beta values
 ncase <- 1/(sigma.hat^2)
 ncntl <- 1/(sigma.hat^2)
 
@@ -82,11 +87,8 @@ onesided <- hsum$Subset.1sided
 twosided <- hsum$Subset.2sided
 
 
-#only keep SNPs with P-value < 5e-8
-one_sig_lower <- subset(onesided, Pvalue < 0.05)
-two_sig_lower <- subset(twosided, Pvalue < 0.05)
+#only keep SNPs with P-value < 0.05
+one_sig <- subset(onesided, Pvalue < 0.05)
+two_sig <- subset(twosided, Pvalue < 0.05)
 
-#for two-sided, this goes for P-values in both directions too
-two_really_sig_lower <- subset(two_sig_lower, Pvalue.1 < 0.05)
-two_really_sig_lower <- subset(two_really_sig_lower, Pvalue.2 < 0.05)
                                      
