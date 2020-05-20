@@ -1,5 +1,10 @@
 #!/bin/bash
 
+#Carla Smith, first version completed on 13th May 2020
+#Input is summary statistics files with names listed after flag -t (traits), and population sizes listed after -n
+#Both as comma-separated lists
+#Outputs: log and Rg files from ldsc, GenomicSEM and ASSET subset objects to load back into R
+
 #load modules
 module load anaconda3/personal
 module load ldsc
